@@ -5,6 +5,8 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,16 +26,25 @@ public class MainPageTest {
     @BeforeEach
     public void setUp() {
         open("https://www.jetbrains.com/");
+
+        try {
+            if (mainPage.acceptCookiesButton.isDisplayed()) {
+                mainPage.acceptCookiesButton.click();
+                sleep(500);
+            }
+        } catch (Error e) {
+            // Banner not found, safe to ignore
+        }
     }
 
     @Test
     public void search() {
         mainPage.searchButton.click();
 
-        $("[data-test='search-input']").sendKeys("Selenium");
+        $("[data-test-id='search-input']").sendKeys("Selenium");
         $("button[data-test='full-search-button']").click();
 
-        $("input[data-test='search-input']").shouldHave(attribute("value", "Selenium"));
+        $("input[data-test-id='search-input']").shouldHave(attribute("value", "Selenium"));
     }
 
     @Test
