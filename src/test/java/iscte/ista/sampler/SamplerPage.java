@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class SamplerPage {
     private static final String URL = "https://vaadin.com/docs/latest/components";
 
-    // Locator for the link (Using the href is safer than text)
+    // Locator for the link
     private final SelenideElement gridLink = $("a[href*='components/grid']");
 
     // The Header on the destination page
@@ -15,25 +15,22 @@ public class SamplerPage {
 
     public void openPage() {
         open(URL);
+        // Remove banner if it exists to avoid click interception
+        executeJavaScript("var banner = document.getElementById('haas-cookie-dialog'); if(banner) banner.remove();");
     }
 
     public void navigateToDataPresentation() {
-        // 1. Check if the link exists on the page
         if (gridLink.exists()) {
-            // 2. Scroll to it
             gridLink.scrollTo();
-
-            // 3. THE FIX: Use JavaScript Click
-            // This ignores the cookie banner completely.
-            // If ClickOptions isn't recognized, ensure you imported com.codeborne.selenide.ClickOptions
             gridLink.click(ClickOptions.usingJavaScript());
         } else {
-            // Fallback: If the menu is collapsed or hidden, go directly to the URL
             open("https://vaadin.com/docs/latest/components/grid");
         }
     }
 
-    public String getHeaderText() {
-        return pageHeader.getText();
+    // UPDATE: Return the element, not just the string.
+    // This allows the test to say "Wait for this element to have text"
+    public SelenideElement getHeaderElement() {
+        return pageHeader;
     }
 }
