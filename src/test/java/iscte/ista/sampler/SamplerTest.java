@@ -32,8 +32,7 @@ public class SamplerTest {
     public void accessDataPresentationComponent() {
         page.navigateToDataPresentation();
 
-        // FIX: Use Selenide's assertion to WAIT for the page load
-        // This will retry until the H1 tag contains "Grid"
+
         page.getHeaderElement().shouldHave(text("Grid"));
     }
 }
