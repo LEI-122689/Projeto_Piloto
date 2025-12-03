@@ -8,7 +8,7 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.codeborne.selenide.Condition.text; // Import this!
 
 public class SamplerTest {
 
@@ -17,7 +17,7 @@ public class SamplerTest {
     @BeforeAll
     public static void setUpAll() {
         Configuration.browserSize = "1280x800";
-        Configuration.timeout = 10000; // Give it time to load
+        Configuration.timeout = 10000;
         SelenideLogger.addListener("allure", new AllureSelenide());
     }
 
@@ -32,7 +32,8 @@ public class SamplerTest {
     public void accessDataPresentationComponent() {
         page.navigateToDataPresentation();
 
-        // The header should contain "Grid"
-        assertTrue(page.getHeaderText().contains("Grid"));
+        // FIX: Use Selenide's assertion to WAIT for the page load
+        // This will retry until the H1 tag contains "Grid"
+        page.getHeaderElement().shouldHave(text("Grid"));
     }
 }
